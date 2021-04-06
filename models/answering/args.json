@@ -1,0 +1,22 @@
+{
+  "model_name_or_path"          : "google/electra-large-discriminator",
+  "tokenizer_name"              : "google/electra-large-discriminator",
+  "model_type"                  : "electra",
+  "data_dir"                    : "../squad_data",
+  "max_seq_length"              : 384 ,
+  "doc_stride"                  : 128,
+  "fp16"                        : false,
+  "max_grad_norm"               : 0.5,
+  "per_device_train_batch_size" : 8,
+  "per_device_eval_batch_size"  : 8,
+  "gradient_accumulation_steps" : 8,
+  "logging_steps"               : 50,
+  "learning_rate"               : 3e-5,
+  "num_train_epochs"            : 3,
+  "overwrite_output_dir"        : true,
+  "output_dir"                  : "./model",
+  "do_train"                    : true,
+  "do_eval"                     : true,
+  "version_2_with_negative"     : true,
+  "cache_dir"                   : "./cache"
+}
