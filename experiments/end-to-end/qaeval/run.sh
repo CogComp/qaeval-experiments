@@ -9,63 +9,58 @@ export MKL_NUM_THREADS=1
 
 set -e
 
-if [ "$#" -ne 1 ]; then
-    echo "Usage: sh path/to/run.sh <dataset>"
-    exit
-fi
+for dataset in tac2008 tac2009; do
+  # Run question-generation
+  conda deactivate
+  conda activate ${QAEVAL_ENV}
 
-dataset=$1
+  python -m qaeval_expts.generation.generate_candidates \
+    data/${dataset}/summaries.jsonl \
+    ${EXPT_DIR}/output/${dataset}/candidates.jsonl \
+    --method all-nps
 
-# Run question-generation
-conda deactivate
-conda activate ${QAEVAL_ENV}
+  python -m qaeval_expts.generation.generate_prompts \
+    ${EXPT_DIR}/output/${dataset}/candidates.jsonl \
+    ${EXPT_DIR}/output/${dataset}/prompts.jsonl
 
-python -m qaeval_expts.generation.generate_candidates \
-  data/${dataset}/summaries.jsonl \
-  ${EXPT_DIR}/output/${dataset}/candidates.jsonl \
-  --method all-nps
+  sh models/generation/predict.sh \
+    ${EXPT_DIR}/output/${dataset}/prompts.jsonl \
+    models/generation/model/model.tar.gz \
+    ${EXPT_DIR}/output/${dataset}/raw-questions-output.jsonl
 
-python -m qaeval_expts.generation.generate_prompts \
-  ${EXPT_DIR}/output/${dataset}/candidates.jsonl \
-  ${EXPT_DIR}/output/${dataset}/prompts.jsonl
+  python -m qaeval_expts.generation.model.postprocess \
+    ${EXPT_DIR}/output/${dataset}/candidates.jsonl \
+    ${EXPT_DIR}/output/${dataset}/raw-questions-output.jsonl \
+    ${EXPT_DIR}/output/${dataset}/questions.jsonl
 
-sh models/generation/predict.sh \
-  ${EXPT_DIR}/output/${dataset}/prompts.jsonl \
-  models/generation/model/model.tar.gz \
-  ${EXPT_DIR}/output/${dataset}/raw-questions-output.jsonl
+  # Run question-answering
+  conda deactivate
+  conda activate ${TRANSFORMERS_ENV}
 
-python -m qaeval_expts.generation.model.postprocess \
-  ${EXPT_DIR}/output/${dataset}/candidates.jsonl \
-  ${EXPT_DIR}/output/${dataset}/raw-questions-output.jsonl \
-  ${EXPT_DIR}/output/${dataset}/questions.jsonl
+  sh models/answering/predict.sh \
+    ${EXPT_DIR}/output/${dataset}/questions.jsonl \
+    ${EXPT_DIR}/output/${dataset}/raw-answering-output
 
-# Run question-answering
-conda deactivate
-conda activate ${TRANSFORMERS_ENV}
+  conda deactivate
+  conda activate ${QAEVAL_ENV}
 
-sh models/answering/predict.sh \
-  ${EXPT_DIR}/output/${dataset}/questions.jsonl \
-  ${EXPT_DIR}/output/${dataset}/raw-answering-output
+  python -m qaeval_expts.answering.postprocess \
+    ${EXPT_DIR}/output/${dataset}/questions.jsonl \
+    ${EXPT_DIR}/output/${dataset}/raw-answering-output/nbest_predictions_.json \
+    ${EXPT_DIR}/output/${dataset}/answers.jsonl
 
-conda deactivate
-conda activate ${QAEVAL_ENV}
+  # Score the summaries
+  sacrerouge score \
+    --config data/metric.jsonnet \
+    --output-jsonl ${EXPT_DIR}/output/${dataset}/scores.jsonl \
+    --overrides '{"input_files": "'${EXPT_DIR}'/output/'${dataset}'/answers.jsonl"}' \
+    --include-packages qaeval_expts
 
-python -m qaeval_expts.answering.postprocess \
-  ${EXPT_DIR}/output/${dataset}/questions.jsonl \
-  ${EXPT_DIR}/output/${dataset}/raw-answering-output/nbest_predictions_.json \
-  ${EXPT_DIR}/output/${dataset}/answers.jsonl
-
-# Score the summaries
-sacrerouge score \
-  --config data/metric.jsonnet \
-  --output-jsonl ${EXPT_DIR}/output/${dataset}/scores.jsonl \
-  --overrides '{"input_files": "'${EXPT_DIR}'/output/'${dataset}'/answers.jsonl"}' \
-  --include-packages qaeval_expts
-
-for metric in "exact-match" "f1"; do
-  sacrerouge correlate \
-    --metrics-jsonl-files data/${dataset}/metrics.jsonl ${EXPT_DIR}/output/${dataset}/scores.jsonl \
-    --metrics overall_responsiveness qa-eval_${metric} \
-    --summarizer-type peer \
-    --output-file ${EXPT_DIR}/output/${dataset}/correlations/${metric}.json
+  for metric in "exact-match" "f1"; do
+    sacrerouge correlate \
+      --metrics-jsonl-files data/${dataset}/metrics.jsonl ${EXPT_DIR}/output/${dataset}/scores.jsonl \
+      --metrics overall_responsiveness qa-eval_${metric} \
+      --summarizer-type peer \
+      --output-file ${EXPT_DIR}/output/${dataset}/correlations/${metric}.json
+  done
 done
