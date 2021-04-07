@@ -1,6 +1,6 @@
 # QAEval Experiments
 This repository will contain the code to reproduce the experiments from [Towards Question-Answering as an Automatic Metric for Evaluating the Content Quality of a Summary](https://arxiv.org/abs/2010.00490).
-The experiment code is not ready to be released yet, but if you would like to run the QAEval metric, see [here](https://github.com/danieldeutsch/sacrerouge/blob/master/doc/metrics/qaeval.md)
+If you want to use QAEval, the easiest way is through [its implementation in SacreROUGE](https://github.com/danieldeutsch/sacrerouge/blob/master/doc/metrics/qaeval.md), which is far simpler and easier to use than this repository.
 
 ## Environments
 The experiments run several different evaluation metrics and deep learning libraries.
@@ -28,6 +28,22 @@ As far as we know, these can't be included in the environment files, so it needs
 
 Further, each of the scripts must initialize conda before they run using `source ~/miniconda3/etc/profile.d/conda.sh`.
 If that is not the location of your conda setup script, you will need to replace it in all of the scripts you want to run.
+
+The `QAEVAL_ENV` must have ROUGE and PyrEval setup:
+```
+sacrerouge setup-metric rouge
+sacrerouge setup-metric pyreval
+```
+
+The `MOVERSCORE_ENV` must have MoverScore setup:
+```
+sacrerouge setup-metric moverscore
+```
+
+The `APES_ENV` must have APES setup:
+```
+sacrerouge setup-metric apes
+```
 
 ## Data Dependencies
 Some of the experiments require access to the TAC 2008 and 2009 datasets, which we cannot provide due to license restrictions.
@@ -65,6 +81,9 @@ See [here](experiments/answer-selection/Readme.md) to reproduce the results abou
 
 ## Question Generation Results
 See [here](experiments/question-generation/Readme.md) to reproduce the results about human vs system-generated questions (Figure 3).
+
+## Question Answering Results
+See [here](experiments/question-answering/fabbri2020/Readme.md) to reproduce the results about the QA performance/metric correlations on the labeled Fabbri (2020) data (Tables 2 and 3).
 
 
 ## TODO
