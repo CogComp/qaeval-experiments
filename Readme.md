@@ -52,6 +52,7 @@ Then copy the following files over to the `data` directory of this repo:
 - `{tac2008,tac2009}/task1.A.summaries.jsonl -> data/{tac2008,tac2009}/summaries.jsonl`
 - `{tac2008,tac2009}/task1.A.metrics.jsonl -> data/{tac2008,tac2009}/metrics.jsonl`
 - `{tac2008,tac2009}/task1.A.pyramids.jsonl -> data/{tac2008,tac2009}/pyramids.jsonl`
+- `{tac2008,tac2009}/task1.A.pyramid-annotations.jsonl -> data/{tac2008,tac2009}/pyramid-annotations.jsonl`
 
 The Fabbri (2020) data dependencies can be setup using SacreROUGE.
 See [here](https://github.com/danieldeutsch/sacrerouge/blob/master/doc/datasets/fabbri2020.md).
@@ -83,6 +84,7 @@ See [here](experiments/answer-selection/Readme.md) to reproduce the results abou
 See [here](experiments/question-generation/Readme.md) to reproduce the results about human vs system-generated questions (Figure 3).
 
 ## Question Answering Results
+See [here](experiments/question-answering/tac2008/Readme.md) to reproduce the results about the QA performance/metric correlations on the labeled TAC 2008 data (Tables 2 and 3).
 See [here](experiments/question-answering/fabbri2020/Readme.md) to reproduce the results about the QA performance/metric correlations on the labeled Fabbri (2020) data (Tables 2 and 3).
 
 
