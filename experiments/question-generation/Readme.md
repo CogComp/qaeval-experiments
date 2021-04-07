@@ -5,6 +5,10 @@ Included are:
 Required data:
 - `data/tac2008/{summaries,metrics}.jsonl`
 
+Required environments:
+- `QAEVAL_ENV`
+- `TRANSFORMERS_ENV`
+
 To reproduce the results, run
 ```
 sh experiments/question-generation/run.sh

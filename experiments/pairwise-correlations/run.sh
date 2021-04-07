@@ -9,6 +9,9 @@ export MKL_NUM_THREADS=1
 
 set -e
 
+conda deactivate
+conda activate ${QAEVAL_ENV}
+
 metrics=("rouge-1_recall" "rouge-2_recall" "rouge-l_recall" "rouge-su4_recall" "qa-eval_exact-match" "qa-eval_f1" "APES_num_correct")
 for metric1 in "${metrics[@]}"; do
   for metric2 in "${metrics[@]}"; do

@@ -8,5 +8,8 @@ However, they are used in the processing.
 Required data:
 - `data/tac2008/{summaries,pyramids}.jsonl`
 
+Required environments:
+- `QAEVAL_ENV`
+
 From the root of the repository, run `sh experiments/answer-selection/run.sh` to run the experiments.
 The results will be written to stdout. 

@@ -11,6 +11,9 @@ They will produce scores files in the following locations which are used by this
 The other required input are the TAC 2008 scores:
 - `data/tac2008/metrics.jsonl`
 
+Required environments:
+- `QAEVAL_ENV`
+
 Then, run:
 ```
 sh experiments/pairwise-correlations/run.sh
