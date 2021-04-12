@@ -87,6 +87,9 @@ See [here](experiments/question-generation/Readme.md) to reproduce the results a
 See [here](experiments/question-answering/tac2008/Readme.md) to reproduce the results about the QA performance/metric correlations on the labeled TAC 2008 data (Tables 2 and 3).
 See [here](experiments/question-answering/fabbri2020/Readme.md) to reproduce the results about the QA performance/metric correlations on the labeled Fabbri (2020) data (Tables 2 and 3).
 
+## Number of References Learning Curve Results
+See [here](experiments/num-references/Readme.md) to reproduce the learning curve in the appendix that measures the impact of additional reference summaries (Figure 6).
+
 
 ## TODO
 1. add a link to download the generation model

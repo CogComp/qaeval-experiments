@@ -92,6 +92,7 @@ for dataset in tac2008; do
     --input-files ${EXPT_DIR}/output/${dataset}/reference-samples.jsonl \
     --dataset-reader reference-based \
     --environment_name ${PYREVAL_ENV} \
+    --disable-peer-jackknifing \
     --verbose true
 
   # Now split the samples into individual files
