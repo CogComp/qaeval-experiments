@@ -62,8 +62,22 @@ We have also included the data in this repo since it is publicly available (`dat
 Running QAEval requires a pre-trained question generation and question answering models.
 The code to retrain each of those models can be found [here](models/generation/Readme.md) and [here](models/answering/Readme.md).
 
-To download our pre-trained models: TODO
+The models are available for download here:
+- [Question generation](http://cogcomp.org/models/qaeval-experiments/model.tar.gz)
+- [Question answering](http://cogcomp.org/models/qaeval-experiments/qa-model.zip)
 
+The generation model should be downloaded to `models/generation/model/model.tar.gz`.
+The answering model should be downloaded and unzipped in the `models/answering/model/` directory.
+The files in that directory should look like:
+```bash
+ls -l models/answering/model
+> config.json
+> pytorch_model.bin
+> special_tokens_map.json
+> tokenizer_config.json
+> training_args.bin
+> vocab.txt
+```
 
 ## TAC 2008 & 2009 Correlations
 To calculate the correlations of the metrics to human judgments on the TAC 2008 and 2009 datasets (Table 4), see `experiments/end-to-end`.
@@ -89,8 +103,3 @@ See [here](experiments/question-answering/fabbri2020/Readme.md) to reproduce the
 
 ## Number of References Learning Curve Results
 See [here](experiments/num-references/Readme.md) to reproduce the learning curve in the appendix that measures the impact of additional reference summaries (Figure 6).
-
-
-## TODO
-1. add a link to download the generation model
-2. add a link to download the QA model
