@@ -8,7 +8,7 @@ from sacrerouge.io import JsonlReader
 from typing import Dict, Tuple
 
 
-def load_answers(file_path: str, summarizer_type: str) -> Dict[str, Tuple[bool, str]]:
+def load_answers(file_path: str, summarizer_type: str, is_expert: bool) -> Dict[str, Tuple[bool, str]]:
     answers = {}
     with JsonlReader(file_path) as f:
         for instance in f:
@@ -21,7 +21,12 @@ def load_answers(file_path: str, summarizer_type: str) -> Dict[str, Tuple[bool, 
                         assert len(question['predictions']) == 1
                         is_answerable = question['predictions'][0]['probability'] > question['predictions'][0]['null_probability']
                         if is_answerable:
-                            prediction = question['predictions'][0]['answer']
+                            if is_expert:
+                                # We actually want to calculate EM and F1 against the original answer,
+                                # not the human predicted answer.
+                                prediction = question['answer']
+                            else:
+                                prediction = question['predictions'][0]['answer']
                         else:
                             prediction = ''
 
@@ -157,8 +162,8 @@ def select_answerable_only(ground_truth: Dict[str, Tuple[bool, str]],
 
 
 def main(args):
-    ground_truth = load_answers(args.expert_answers_jsonl, args.summarizer_type)
-    predictions = load_answers(args.model_answers_jsonl, args.summarizer_type)
+    ground_truth = load_answers(args.expert_answers_jsonl, args.summarizer_type, True)
+    predictions = load_answers(args.model_answers_jsonl, args.summarizer_type, False)
     if len(ground_truth) != len(predictions):
         print(f'Warning: Different number of outputs. GT: {len(ground_truth)}, Pred: {len(predictions)}. '
               f'Evaluating on just the GT subset')
